@@ -65,7 +65,12 @@ if(COMPILER_SUPPORTS_FMA)
 endif()
 
 # If building one the same hardware to be deployed on, try `-march=native`!
-add_compile_options(-O3 -finline-limit=10000000 -ffp-contract=fast -ffast-math -mtune=generic)
+if(DEFINED CMAKE_TOOLCHAIN_FILE)
+  # we are cross compiling so don't be greedy with options, should add ARCH based
+  add_compile_options(-O3 -finline-limit=10000000 -ffp-contract=fast -ffast-math)
+else()
+  add_compile_options(-O3 -finline-limit=10000000 -ffp-contract=fast -ffast-math -mtune=generic)
+endif()
 
 add_library(mppi_controller SHARED
   src/controller.cpp
